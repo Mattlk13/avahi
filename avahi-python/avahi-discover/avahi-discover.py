@@ -210,10 +210,10 @@ class Main_window:
             self.new_service_type(interface, protocol, self.stype, domain)
 
     def new_domain(self,interface, protocol, domain, flags):
-        if ((interface,protocol) in self.zc_ifaces) == False:
+        if (interface,protocol) not in self.zc_ifaces:
             ifn = self.get_interface_name(interface, protocol)
             self.zc_ifaces[(interface,protocol)] = self.insert_row(self.treemodel, None, ifn,None,interface,protocol,None,domain)
-        if ((interface,protocol,domain) in self.zc_domains) == False:
+        if (interface,protocol,domain) not in self.zc_domains:
             self.zc_domains[(interface,protocol,domain)] = self.insert_row(self.treemodel, self.zc_ifaces[(interface,protocol)], domain,None,interface,protocol,None,domain)
         if domain != "local":
             self.browse_domain(interface, protocol, domain)
@@ -238,12 +238,15 @@ class Main_window:
                 txts+="<b>" + _("TXT") + " <i>%s</i></b> = %s\n" % (k,v)
         else:
             txts = "<b>" + _("TXT Data:") + "</b> <i>" + _("empty") + "</i>"
+        
+        txts = txts.decode("utf-8")
 
         infos = "<b>" + _("Service Type:") + "</b> %s\n"
         infos += "<b>" + _("Service Name:") + "</b> %s\n"
         infos += "<b>" + _("Domain Name:") + "</b> %s\n"
         infos += "<b>" + _("Interface:") + "</b> %s %s\n"
         infos += "<b>" + _("Address:") + "</b> %s/%s:%i\n%s"
+        infos = infos.decode("utf-8")
         infos = infos % (stype, name, domain, self.siocgifname(interface), self.protoname(protocol), host, address, port, txts.strip())
         self.info_label.set_markup(infos)
 
